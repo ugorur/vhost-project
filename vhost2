@@ -1,0 +1,496 @@
+#!/usr/bin/env python
+#-*-coding:utf-8-*-
+
+from sys import exit, argv
+from os import makedirs, system, path, environ
+from random import SystemRandom
+from MySQLdb import connect
+
+PLATFORMLAR = ['django', 'php']
+ISLEMLER = ['ekle', 'sil', 'yonet', 'pasif', 'aktif']
+
+class MySQL (object):
+
+	root = connect('localhost', 'root', 'umur5990')
+
+	def __init__(self, kullanici):
+		self.kullanici = kullanici
+		self.imlec = self.root.cursor()
+
+	def yarat(self, sifre = 'umur5990'):
+		self.imlec.execute('CREATE DATABASE IF NOT EXISTS ' + self.kullanici + '_db CHARACTER SET utf8 COLLATE utf8_general_ci')
+		self.imlec.execute('GRANT ALL ON ' + self.kullanici + '_db.* TO ' + self.kullanici + '@localhost IDENTIFIED BY \'' + sifre + '\'')
+
+	def yoket(self):
+		self.yarat()
+
+		self.imlec.execute('DROP DATABASE '  + self.kullanici + '_db')
+		self.imlec.execute('DROP USER ' + self.kullanici + '@localhost')
+
+	def __del__(self):
+		self.imlec.execute('FLUSH PRIVILEGES')
+
+		self.root.commit()
+		self.root.close()
+
+class Tur (object):
+
+	_index = """<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>%(kullanici)s kullanıcısının sitesi açıldı</title>
+	</head>
+	<body>
+		<?php echo "Merhaba Dünya" . PHP_EOL; ?>
+	</body>
+</html>"""
+
+	def __init__(self, kullanici):
+		self.kullanici = kullanici
+
+	def yarat(self, domain, sifre, ha):
+		self.dizinler()
+		self.index()
+
+	def dizinler(self):
+		makedirs('/var/www/' + self.kullanici + '/logs')
+		makedirs('/var/www/' + self.kullanici + '/public_html')
+
+	def index(self):
+		dosya = open('/var/www/' + self.kullanici + '/public_html/index.php', 'w')
+		dosya.write(self._index % {'kullanici': self.kullanici})
+		dosya.close()
+
+	def sil(self):
+		system('rm -Rf /var/www/' + self.kullanici)
+
+	def yonet(self, komut):
+		pass
+
+class PHP (Tur):
+
+	apache = """<VirtualHost %(domain)s>
+	ServerAdmin mail@ugorur.com
+
+	ServerName %(domain)s
+	ServerAlias www.%(domain)s
+
+	DocumentRoot /var/www/%(kullanici)s/public_html
+
+	Alias /phpmyadmin /var/www/phpmyadmin/public_html
+
+	ErrorLog /var/www/%(kullanici)s/logs/error.log
+	CustomLog /var/www/%(kullanici)s/logs/access.log common
+
+	<Directory /var/www/%(kullanici)s/public_html>
+		DirectoryIndex index.html index.php
+		Options Indexes FollowSymLinks
+		AllowOverride All
+		Require all granted
+	</Directory>
+
+	<Directory /var/www/phpmyadmin/public_html>
+		DirectoryIndex index.php
+		Options Indexes FollowSymLinks
+		AllowOverride All
+		Require all granted
+	</Directory>
+</VirtualHost>"""
+
+	def __init__(self, kullanici):
+		super(PHP, self).__init__(kullanici)
+
+class Django (Tur):
+
+	apache = """<VirtualHost %(domain)s>
+	ServerAdmin mail@ugorur.com
+
+	ServerName %(domain)s
+	ServerAlias www.%(domain)s
+
+	DocumentRoot /var/www/%(kullanici)s/%(kullanici)s
+
+	Alias /phpmyadmin /var/www/phpmyadmin/public_html
+	Alias /static/admin /usr/local/lib/python2.7/dist-packages/django/contrib/admin/static/admin
+
+	Alias /public /var/www/%(kullanici)s/public
+	Alias /static /var/www/%(kullanici)s/static
+	Alias /media /var/www/%(kullanici)s/media
+
+	ErrorLog /var/www/%(kullanici)s/logs/error.log
+	CustomLog /var/www/%(kullanici)s/logs/access.log common
+
+	WSGIScriptAlias / /var/www/%(kullanici)s/%(kullanici)s/wsgi.py
+	WSGIDaemonProcess %(kullanici)s python-path=/var/www/%(kullanici)s/%(kullanici)s processes=2 threads=15 display-name=%(kullanici)s
+	WSGIProcessGroup %(kullanici)s
+
+	<Directory /var/www/%(kullanici)s/%(kullanici)s>
+		Options All
+		AllowOverride All
+		Require all granted
+	</Directory>
+
+	<Directory /var/www/phpmyadmin/public_html>
+		DirectoryIndex index.php
+		Options Indexes FollowSymLinks
+		AllowOverride All
+		Require all granted
+	</Directory>
+
+	<Directory /usr/local/lib/python2.7/dist-packages/django/contrib/admin/static/admin>
+		Options All
+		AllowOverride All
+		Require all granted
+	</Directory>
+
+	<Directory /var/www/%(kullanici)s/public_html>
+		DirectoryIndex index.html index.php
+		Options Indexes FollowSymLinks
+		AllowOverride All
+		Require all granted
+	</Directory>
+
+	<Directory /var/www/%(kullanici)s/static>
+		DirectoryIndex index.html
+		Options All
+		AllowOverride All
+		Require all granted
+	</Directory>
+
+	<Directory /var/www/%(kullanici)s/media>
+		DirectoryIndex index.html
+		Options All
+		AllowOverride All
+		Require all granted
+	</Directory>
+</VirtualHost>"""
+
+	_wsgi = """import sys
+sys.path.append('/var/www')
+sys.path.append('/var/www/%(kullanici)s')
+sys.path.append('/var/www/%(kullanici)s/%(kullanici)s')
+
+import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', '%(kullanici)s.settings')
+
+from django.core.wsgi import get_wsgi_application
+application = get_wsgi_application()"""
+
+	_settings = """import os
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+SECRET_KEY = '%(gizli)s'
+DEBUG = %(hata_ayiklama)s
+TEMPLATE_DEBUG = %(hata_ayiklama)s
+ALLOWED_HOSTS = ['%(domain)s', 'www.%(domain)s']
+INSTALLED_APPS = (
+	'django.contrib.admin',
+	'django.contrib.auth',
+	'django.contrib.contenttypes',
+	'django.contrib.sessions',
+	'django.contrib.messages',
+	'django.contrib.staticfiles',
+)
+MIDDLEWARE_CLASSES = (
+	'django.contrib.sessions.middleware.SessionMiddleware',
+	'django.middleware.common.CommonMiddleware',
+	'django.middleware.csrf.CsrfViewMiddleware',
+	'django.contrib.auth.middleware.AuthenticationMiddleware',
+	'django.contrib.messages.middleware.MessageMiddleware',
+	'django.middleware.clickjacking.XFrameOptionsMiddleware',
+)
+ROOT_URLCONF = '%(kullanici)s.urls'
+WSGI_APPLICATION = '%(kullanici)s.wsgi.application'
+DATABASES = {
+	'default': {
+		'ENGINE': 'django.db.backends.mysql',
+		'HOST': 'localhost',
+		'PORT': 3306,
+		'NAME': '%(kullanici)s_db',
+		'USER': '%(kullanici)s',
+		'PASSWORD': '%(sifre)s',
+		'OPTIONS': {
+			'init_command': 'SET storage_engine=INNODB'
+		}
+	}
+}
+CACHES = {
+	'default': {
+		'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+		'LOCATION': '/var/www/%(kullanici)s/cache',
+	}
+}
+LANGUAGE_CODE = 'tr-TR'
+TIME_ZONE = 'Europe/Istanbul'
+USE_I18N = True
+USE_L10N = True
+USE_TZ = True
+STATIC_URL = 'http://www.%(domain)s/static/'
+TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]"""
+
+	_izin_yok = """<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Giriş yasak!!!</title>
+	</head>
+	<body>
+		Bu sayfaya girmeniz mahkeme kararı ile olmasada yasaklandı...
+	</body>
+</html>"""
+
+	def __init__(self, kullanici):
+		super(Django, self).__init__(kullanici)
+
+	def yarat(self, domain, sifre, ha):
+		self.dizinler()
+		self.index()
+
+		system('django-admin.py startproject ' + self.kullanici + ' /var/www/' + self.kullanici)
+
+		dosya = open('/var/www/' + self.kullanici + '/' + self.kullanici + '/wsgi.py', 'w')
+		dosya.write(self._wsgi % {'kullanici': self.kullanici})
+		dosya.close()
+
+		if ha:
+			hata_ayiklama = 'True'
+		else:
+			hata_ayiklama = 'False'
+
+		dosya = open('/var/www/' + self.kullanici + '/' + self.kullanici + '/settings.py', 'w')
+		dosya.write(self._settings % {
+			'kullanici': self.kullanici, 
+			'domain': domain, 
+			'sifre': sifre, 
+			'hata_ayiklama': hata_ayiklama,
+			'gizli': ''.join([SystemRandom().choice('abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)') for i in range(50)])
+		})
+		dosya.close()
+
+	def dizinler(self):
+		super(Django, self).dizinler()
+
+		makedirs('/var/www/' + self.kullanici + '/static')
+		makedirs('/var/www/' + self.kullanici + '/cache')
+		makedirs('/var/www/' + self.kullanici + '/media')
+		makedirs('/var/www/' + self.kullanici + '/templates')
+
+	def index(self):
+		super(Django, self).index()
+
+		dosya = open('/var/www/' + self.kullanici + '/static/index.html', 'w')
+		dosya.write(self._izin_yok)
+		dosya.close()
+
+		dosya = open('/var/www/' + self.kullanici + '/media/index.html', 'w')
+		dosya.write(self._izin_yok)
+		dosya.close()
+
+	def yonet(self, komut):
+		system('cd /var/www/' + self.kullanici + ' && python manage.py ' + komut)
+		system('chmod -R 777 /var/www/' + self.kullanici)
+		system('chown -R ugorur:www-data /var/www/' + self.kullanici)
+
+class Apache (object):
+
+	def __init__(self, domain = False):
+		self.domain = domain
+
+	def ekle(self, apache_conf, kullanici):
+		self._kontrol()
+
+		dosya = open('/etc/apache2/sites-available/' + self.domain + '.conf', 'w')
+		dosya.write(apache_conf % {'domain': self.domain, 'kullanici': kullanici})
+		dosya.close()
+
+		self.aktif()
+
+	def aktif(self):
+		self._kontrol()
+		
+		system('a2ensite ' + self.domain)
+
+	def pasif(self):
+		self._kontrol()
+		
+		system('a2dissite ' + self.domain)
+
+	def sil(self):
+		self._kontrol()
+		
+		self.pasif()
+		system('rm -Rf /etc/apache2/sites-available/' + self.domain + '.conf')
+	
+	def _kontrol(self):
+		if not self.domain:
+			print '\033[1m\033[91mHATA:\033[0m Lütfen domain adresi bilgisi veriniz'
+	 		exit()
+
+	def yenile(self):
+		system('service apache2 restart')
+	
+class Hosts (object):
+
+	def __init__(self, domain):
+		self.domain = domain
+
+	def ekle(self):
+		dosya = open('/etc/hosts', 'a')
+		dosya.write('\n127.0.0.1\t' + self.domain + '\twww.' + self.domain)
+		dosya.close()
+
+	def sil(self):
+		dosya = open('/etc/hosts', 'r')
+		satirlar = dosya.readlines()
+		dosya.close()
+
+		dosya = open('/etc/hosts', 'w')
+		for satir in satirlar:
+			if satir == '127.0.0.1\t' + self.domain + '\twww.' + self.domain + '\n' or satir == '127.0.0.1\t' + self.domain + '\twww.' + self.domain or satir == '\n127.0.0.1\t' + self.domain + '\twww.' + self.domain:
+				continue
+			dosya.write(satir.strip() + '\n')
+		dosya.close()
+
+class Program (object):
+
+	domain = None
+	uzanti = 'loc'
+	sifre = 'umur5990'
+	hata_ayiklama = True
+
+	def __init__(self):
+		if 'SUDO_UID' in environ.keys():
+			if len(argv) == 2:
+				if argv[1] == 'yenile':
+					self._yenile()
+
+			if len(argv) < 3:
+				print '\033[1m\033[91mHATA:\033[0m Lüften programı bir komut ile çalıştırın: "sudo vhost2 <platform> <islem>"'
+				exit()
+		else:
+			print '\033[1m\033[91mHATA:\033[0m Yönetici girişi yapmak gerek. Lüften programı "sudo vhost2 <platform> <islem>" komutu ile çalıştırın'
+			exit()
+
+		platform = argv[1]
+		self.islem = argv[2]
+
+		if platform not in PLATFORMLAR:
+			print '\033[1m\033[91mHATA:\033[0m Lütfen geçerli platform giriniz'
+	 		print 'Geçerli platformlar: ' + ', '.join(PLATFORMLAR)
+	 		exit()
+
+		if self.islem not in ISLEMLER:
+			print '\033[1m\033[91mHATA:\033[0m Lütfen geçerli işlem giriniz'
+	 		print 'Geçerli işlemler: ' + ', '.join(ISLEMLER)
+	 		exit()
+
+		self.kullanici = raw_input('Kullanıcı Adı: ')
+
+		if not self.kullanici:
+	 		print '\033[1m\033[91mHATA:\033[0m Kullanıcı Adı olmadan olmaz'
+	 		exit()
+
+	 	if platform == 'django':
+	 		self.platform = Django(self.kullanici)
+	 	elif platform == 'php':
+	 		self.platform = PHP(self.kullanici)
+
+	 	self._islemler()
+
+	def _islemler(self):
+		if self.islem == 'ekle':
+			self._ekle()
+		elif self.islem == 'sil':
+			self._sil()
+		elif self.islem == 'yonet':
+			self._yonet()
+		elif self.islem == 'pasif':
+			self._pasiflestir()
+		elif self.islem == 'aktif':
+			self._pasiflestir()
+
+		self._yenile()
+
+	def _sil(self):
+		self._uzanti()
+
+		hosts = Hosts(self.domain)
+		hosts.sil()
+
+		apache = Apache(self.domain)
+		apache.sil()
+
+		self.platform.sil()
+
+		mysql = MySQL(self.kullanici)
+		mysql.yoket()
+
+	def _ekle(self):
+		self._uzanti()
+		self._sifre()
+		self._hata_ayiklama()
+
+		hosts = Hosts(self.domain)
+		hosts.ekle()
+
+		self.platform.yarat(self.domain, self.sifre, self.hata_ayiklama)
+
+		apache = Apache(self.domain)
+		apache.ekle(self.platform.apache, self.kullanici)
+
+		mysql = MySQL(self.kullanici)
+		mysql.yarat(self.sifre)
+
+		system('chmod -R 777 /var/www/' + self.kullanici)
+		system('chown -R ugorur:www-data /var/www/' + self.kullanici)
+
+	def _uzanti(self):
+		uzanti = raw_input('Uzantı: ')
+
+		if uzanti:
+			self.uzanti = uzanti
+
+		self.domain = self.kullanici + '.' + self.uzanti
+
+	def _yonet(self):
+		komut = raw_input('Komut: ')
+
+		if not komut:
+			print '\033[1m\033[91mHATA:\033[0m Lüften bir komut giriniz'
+			exit()
+
+		self.platform.yonet(komut)
+
+	def _sifre(self):
+		sifre = raw_input('Şifre: ')
+
+		if sifre:
+			self.sifre = sifre
+
+	def _hata_ayiklama(self):
+		if raw_input('Hata Ayıklama Açılsın mı? (E/H): ').lower() == 'h':
+			self.hata_ayiklama = False
+
+	def _yenile(self):
+		apache = Apache(self.domain)
+		apache.yenile()
+
+		system('service nscd restart')
+		exit()
+
+	def _pasiflestir(self):
+		self._uzanti()
+
+		apache = Apache(self.domain)
+		apache.pasif()
+		apache.yenile()
+
+	def _aktiflestir(self):
+		self._uzanti()
+
+		apache = Apache(self.domain)
+		apache.aktif()
+		apache.yenile()
+
+if __name__ == '__main__':
+	Program()
