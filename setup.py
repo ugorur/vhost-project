@@ -4,7 +4,7 @@
 from os import system
 from setuptools import setup, find_packages
 
-VERSIYON = '0.0.1'
+VERSIYON = '0.0.3'
 
 VARSAYILAN_CONF = """#!/usr/bin/env python
 #-*-coding:utf-8-*-
@@ -40,11 +40,11 @@ class Kur(object):
 
 	def ayar_olustur(self):
 		self.ayarlar = {
-			'sifre'        : self.sifre         if self.sifre         else '1234',
-			'eposta'       : self.eposta        if self.eposta        else 'webmaster@localhost',
-			'kullanici'    : self.kullanici     if self.kullanici     else 'www-data',
-			'uzanti'       : self.uzanti        if self.uzanti        else 'loc',
-			'hata_ayiklama': self.hata_ayiklama if self.hata_ayiklama else 'webmaster@localhost',
+			'sifre'        : self.sifre     if self.sifre         else '1234',
+			'eposta'       : self.eposta    if self.eposta        else 'webmaster@localhost',
+			'kullanici'    : self.kullanici if self.kullanici     else 'www-data',
+			'uzanti'       : self.uzanti    if self.uzanti        else 'loc',
+			'hata_ayiklama': 'True'         if self.hata_ayiklama else 'False',
 		}
 
 	def olustur(self):
@@ -67,3 +67,9 @@ class Kur(object):
 
 	def __del__(self):
 		system ('rm -rf vhost2_conf.py')
+
+def main():
+	Kur()
+
+if __name__ == '__main__':
+	main()
