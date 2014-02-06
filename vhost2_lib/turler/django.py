@@ -25,7 +25,7 @@ class Django (Tur):
 
 		self._yaz('/var/www/' + self.kullanici + '/' + self.kullanici + '/wsgi.py', self._wsgi % {'kullanici': self.kullanici})
 
-		self.yaz('/var/www/' + self.kullanici + '/' + self.kullanici + '/settings.py', self._settings % {
+		self._yaz('/var/www/' + self.kullanici + '/' + self.kullanici + '/settings.py', self._settings % {
 			'kullanici': self.kullanici, 
 			'domain': domain, 
 			'sifre': sifre, 
