@@ -159,5 +159,8 @@ class Program (object):
 		elif self._platform == 'php':
 			self.platform = PHP(self.kullanici)
 
-if __name__ == '__main__':
+def main():
 	Program()
+
+if __name__ == '__main__':
+	main()
