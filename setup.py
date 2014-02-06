@@ -4,7 +4,7 @@
 from os import system
 from setuptools import setup, find_packages
 
-VERSIYON = '0.0.4'
+VERSIYON = '0.0.5'
 
 VARSAYILAN_CONF = """#!/usr/bin/env python
 #-*-coding:utf-8-*-

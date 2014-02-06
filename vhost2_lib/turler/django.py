@@ -4,7 +4,7 @@
 from . import Tur
 from vhost2_conf import *
 from random import SystemRandom
-from os import path, makedirs
+from os import system, path, makedirs
 
 class Django (Tur):
 
