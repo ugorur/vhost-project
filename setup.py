@@ -4,7 +4,7 @@
 from os import system
 from setuptools import setup, find_packages
 
-VERSIYON = '0.0.3'
+VERSIYON = '0.0.4'
 
 VARSAYILAN_CONF = """#!/usr/bin/env python
 #-*-coding:utf-8-*-
@@ -26,7 +26,7 @@ class Kur(object):
 		self.ayar_olustur()
 
 		dosya = open('vhost2_conf.py', 'w')
-		dosya.write(VARSAYILAN_CONF, self.ayarlar)
+		dosya.write(VARSAYILAN_CONF % self.ayarlar)
 		dosya.close()
 
 		self.olustur()
