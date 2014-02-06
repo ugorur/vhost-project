@@ -3,7 +3,10 @@
 
 from os import system
 
-class Apache (object):
+from . import Lib
+from vhost2_conf import *
+
+class Apache (Lib):
 
 	def __init__(self, domain = False):
 		self.domain = domain
@@ -11,9 +14,7 @@ class Apache (object):
 	def ekle(self, apache_conf, kullanici):
 		self._kontrol()
 
-		dosya = open('/etc/apache2/sites-available/' + self.domain + '.conf', 'w')
-		dosya.write(apache_conf % {'domain': self.domain, 'kullanici': kullanici})
-		dosya.close()
+		self._yaz('/etc/apache2/sites-available/' + self.domain + '.conf', apache_conf % {'domain': self.domain, 'kullanici': kullanici, 'eposta': VARSAYILAN_EPOSTA_ADRESI})
 
 		self.aktif()
 

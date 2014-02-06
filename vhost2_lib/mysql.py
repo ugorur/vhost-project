@@ -3,15 +3,18 @@
 
 from MySQLdb import connect
 
-class MySQL (object):
+from . import Lib
+from vhost2_conf import *
 
-	root = connect('localhost', 'root', 'umur5990')
+class MySQL (Lib):
+
+	root = connect('localhost', 'root', ROOT_SIFRE)
 
 	def __init__(self, kullanici):
 		self.kullanici = kullanici
 		self.imlec = self.root.cursor()
 
-	def yarat(self, sifre = 'umur5990'):
+	def yarat(self, sifre = ROOT_SIFRE):
 		self.imlec.execute('CREATE DATABASE IF NOT EXISTS ' + self.kullanici + '_db CHARACTER SET utf8 COLLATE utf8_general_ci')
 		self.imlec.execute('GRANT ALL ON ' + self.kullanici + '_db.* TO ' + self.kullanici + '@localhost IDENTIFIED BY \'' + sifre + '\'')
 

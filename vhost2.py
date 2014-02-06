@@ -2,7 +2,9 @@
 #-*-coding:utf-8-*-
 
 from sys import exit, argv
-from os import system, environ
+from os import system, environ, path
+
+from vhost2_conf import *
 
 from vhost2_lib.apache import Apache
 from vhost2_lib.hosts import Hosts
@@ -10,15 +12,12 @@ from vhost2_lib.mysql import MySQL
 from vhost2_lib.turler.php import PHP
 from vhost2_lib.turler.django import Django
 
-PLATFORMLAR = ['django', 'php']
-ISLEMLER = ['ekle', 'sil', 'yonet', 'pasif', 'aktif']
-
 class Program (object):
 
 	domain = None
-	uzanti = 'loc'
-	sifre = 'umur5990'
-	hata_ayiklama = True
+	uzanti = VARSAYILAN_UZANTI
+	sifre = ROOT_SIFRE
+	hata_ayiklama = VARSAYILAN_HATA_AYIKLAMA
 
 	def __init__(self):
 		self._kontrol()
@@ -46,6 +45,7 @@ class Program (object):
 		mysql.yoket()
 
 	def _ekle(self):
+		self._kullanici_varmi_kontrol()
 		self._uzanti()
 		self._sifre()
 		self._hata_ayiklama()
@@ -62,7 +62,7 @@ class Program (object):
 		mysql.yarat(self.sifre)
 
 		system('chmod -R 777 /var/www/' + self.kullanici)
-		system('chown -R ugorur:www-data /var/www/' + self.kullanici)
+		system('chown -R ' + VARSAYILAN_KULLANICI + ':www-data /var/www/' + self.kullanici)
 
 	def _uzanti(self):
 		uzanti = raw_input('Uzantı: ')
@@ -146,6 +146,11 @@ class Program (object):
 	def _kullanici_kontrol(self):
 		if not self.kullanici:
 			print '\033[1m\033[91mHATA:\033[0m Kullanıcı Adı olmadan olmaz'
+			exit()
+
+	def _kullanici_varmi_kontrol (self):
+		if path.isdir('/var/www/' + self.kullanici):
+			print '\033[1m\033[91mHATA:\033[0m Bu adres daha önce kullanılmış'
 			exit()
 
 	def _platformlar(self):

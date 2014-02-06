@@ -1,24 +1,23 @@
 #!/usr/bin/env python
 #-*-coding:utf-8-*-
 
-class Hosts (object):
+from . import Lib
+
+class Hosts (Lib):
 
 	def __init__(self, domain):
 		self.domain = domain
 
 	def ekle(self):
-		dosya = open('/etc/hosts', 'a')
-		dosya.write('\n127.0.0.1\t' + self.domain + '\twww.' + self.domain)
-		dosya.close()
+		self._yaz('/etc/hosts', '\n127.0.0.1\t' + self.domain + '\twww.' + self.domain, 'a')
 
 	def sil(self):
-		dosya = open('/etc/hosts', 'r')
-		satirlar = dosya.readlines()
-		dosya.close()
+		icerik = self._oku('/etc/hosts')
 
-		dosya = open('/etc/hosts', 'w')
-		for satir in satirlar:
-			if satir.strip() == '127.0.0.1\t' + self.domain + '\twww.' + self.domain:
-				continue
-			dosya.write(satir.strip() + '\n')
-		dosya.close()
+		veriler = []
+
+		for satir in icerik.split("\n"):
+			if satir.strip() != '127.0.0.1\t' + self.domain + '\twww.' + self.domain:
+				veriler.append(satir.strip())
+
+		self._yaz('/etc/hosts', "\n".join(veriler))

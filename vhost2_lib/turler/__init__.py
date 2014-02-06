@@ -3,18 +3,9 @@
 
 from os import makedirs, system
 
-class Tur (object):
+from vhost2_lib import Lib
 
-	_index = """<!doctype html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title>%(kullanici)s kullanıcısının sitesi açıldı</title>
-	</head>
-	<body>
-		<?php echo "Merhaba Dünya" . PHP_EOL; ?>
-	</body>
-</html>"""
+class Tur (Lib):
 
 	def __init__(self, kullanici):
 		self.kullanici = kullanici
@@ -28,9 +19,7 @@ class Tur (object):
 		makedirs('/var/www/' + self.kullanici + '/public_html')
 
 	def index(self):
-		dosya = open('/var/www/' + self.kullanici + '/public_html/index.php', 'w')
-		dosya.write(self._index % {'kullanici': self.kullanici})
-		dosya.close()
+		self._yaz('/var/www/' + self.kullanici + '/public_html/index.php', self._index % {'kullanici': self.kullanici})
 
 	def sil(self):
 		system('rm -Rf /var/www/' + self.kullanici)
