@@ -5,10 +5,10 @@ class Lib (object):
 
 	def _oku(self, yol):
 		dosya = open(yol)
-		veriler = dosya.readlines()
+		veri = dosya.read()
 		dosya.close()
 
-		return "\n".join(veriler)
+		return veri
 
 	def _yaz(self, yol, icerik, mod = 'w'):
 		dosya = open(yol, mod)

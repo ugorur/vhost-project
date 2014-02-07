@@ -9,11 +9,11 @@ from os import system, path, makedirs
 class Django (Tur):
 
 	def __init__(self, kullanici):
-		self.apache = self._oku(path.dirname(__file__) + '/django/apache')
-		self._wsgi = self._oku(path.dirname(__file__) + '/django/wsgi')
-		self._settings = self._oku(path.dirname(__file__) + '/django/settings')
-		self._izin_yok = self._oku(path.dirname(__file__) + '/django/izinyok')
-		self._index = self._oku(path.dirname(__file__) + '/django/index')
+		self.apache = self._oku(path.dirname(__file__) + '/django/apache').replace("\n\n", "\n")
+		self._wsgi = self._oku(path.dirname(__file__) + '/django/wsgi').replace("\n\n", "\n")
+		self._settings = self._oku(path.dirname(__file__) + '/django/settings').replace("\n\n", "\n")
+		self._izin_yok = self._oku(path.dirname(__file__) + '/django/izinyok').replace("\n\n", "\n")
+		self._index = self._oku(path.dirname(__file__) + '/django/index').replace("\n\n", "\n")
 		
 		super(Django, self).__init__(kullanici)
 

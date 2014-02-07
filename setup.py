@@ -4,7 +4,7 @@
 from os import system
 from setuptools import setup, find_packages
 
-VERSIYON = '3.0.2'
+VERSIYON = '3.0.7'
 
 VARSAYILAN_CONF = """#!/usr/bin/env python
 #-*-coding:utf-8-*-
@@ -63,7 +63,7 @@ class Kur(object):
 			include_package_data = True,
 			scripts              = ['vhost3_conf.py', 'vhost3.py'],
 			package_data         = {'vhost3_lib': ['turler/php/*', 'turler/django/*']},
-			entry_points         = {'console_scripts': ['vhost3 = vhost3:main']}
+			entry_points         = {'console_scripts': ['vhost3 = vhost3:main', 'vhost2 = vhost3:main', 'vhost = vhost3:main']}
 		)
 
 	def __del__(self):
