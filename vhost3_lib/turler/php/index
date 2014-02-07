@@ -1,0 +1,10 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>%(kullanici)s kullanıcısının sitesi açıldı</title>
+	</head>
+	<body>
+		<?php echo "Merhaba Dünya" . PHP_EOL; ?>
+	</body>
+</html>
