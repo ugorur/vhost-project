@@ -4,7 +4,7 @@
 from os import system
 from setuptools import setup, find_packages
 
-VERSIYON = '0.0.6'
+VERSIYON = '0.0.1'
 
 VARSAYILAN_CONF = """#!/usr/bin/env python
 #-*-coding:utf-8-*-
@@ -40,16 +40,16 @@ class Kur(object):
 
 	def ayar_olustur(self):
 		self.ayarlar = {
-			'sifre'        : self.sifre     if self.sifre         else '1234',
-			'eposta'       : self.eposta    if self.eposta        else 'webmaster@localhost',
-			'kullanici'    : self.kullanici if self.kullanici     else 'www-data',
-			'uzanti'       : self.uzanti    if self.uzanti        else 'loc',
-			'hata_ayiklama': 'True'         if self.hata_ayiklama else 'False',
+			'sifre'        : self.sifre     if self.sifre                        else '1234',
+			'eposta'       : self.eposta    if self.eposta                       else 'webmaster@localhost',
+			'kullanici'    : self.kullanici if self.kullanici                    else 'www-data',
+			'uzanti'       : self.uzanti    if self.uzanti                       else 'loc',
+			'hata_ayiklama': 'True'         if self.hata_ayiklama.upper() != 'H' else 'False',
 		}
 
 	def olustur(self):
 		setup(
-			name = 'Virtual Host Creater',
+			name = 'Virtual Host Creater 3',
 			version = VERSIYON,
 			description = 'Virtual Host Creater Project',
 			author = 'ugorur',
@@ -58,11 +58,11 @@ class Kur(object):
 			license = 'GPL v2',
 			packages = find_packages(),
 			include_package_data = True,
-			scripts = ['vhost2_conf.py', 'vhost2.py'],
+			scripts = ['vhost3_conf.py', 'vhost3.py'],
 			package_data = {
-				'vhost2_lib': ['turler/php/*', 'turler/django/*']
+				'vhost3_lib': ['turler/php/*', 'turler/django/*']
 			},
-			entry_points = {'console_scripts': ['vhost2 = vhost2:main']}
+			entry_points = {'console_scripts': ['vhost3 = vhost3:main']}
 		)
 
 	def __del__(self):
