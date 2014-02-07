@@ -115,12 +115,15 @@ class Program (object):
 			if len(argv) == 2:
 				if argv[1] == 'yenile':
 					self._yenile()
+				elif argv[1] == '--versiyon' or argv[1] == '-v':
+					print VERSIYON
+					exit()
 
 			if len(argv) < 3:
-				print '\033[1m\033[91mHATA:\033[0m Lüften programı bir komut ile çalıştırın: "sudo vhost2 <platform> <islem>"'
+				print '\033[1m\033[91mHATA:\033[0m Lüften programı bir komut ile çalıştırın: "sudo vhost3 <platform> <islem>"'
 				exit()
 		else:
-			print '\033[1m\033[91mHATA:\033[0m Yönetici girişi yapmak gerek. Lüften programı "sudo vhost2 <platform> <islem>" komutu ile çalıştırın'
+			print '\033[1m\033[91mHATA:\033[0m Yönetici girişi yapmak gerek. Lüften programı "sudo vhost3 <platform> <islem>" komutu ile çalıştırın'
 			exit()
 
 	def _argv(self):		

@@ -4,10 +4,12 @@
 from os import system
 from setuptools import setup, find_packages
 
-VERSIYON = '0.0.1'
+VERSIYON = '3.0.2'
 
 VARSAYILAN_CONF = """#!/usr/bin/env python
 #-*-coding:utf-8-*-
+
+VERSIYON = '%(versiyon)s'
 
 PLATFORMLAR = ['django', 'php']
 ISLEMLER = ['ekle', 'sil', 'yonet', 'pasif', 'aktif']
@@ -25,7 +27,7 @@ class Kur(object):
 		self.sorular()
 		self.ayar_olustur()
 
-		dosya = open('vhost2_conf.py', 'w')
+		dosya = open('vhost3_conf.py', 'w')
 		dosya.write(VARSAYILAN_CONF % self.ayarlar)
 		dosya.close()
 
@@ -40,6 +42,7 @@ class Kur(object):
 
 	def ayar_olustur(self):
 		self.ayarlar = {
+			'versiyon'     : VERSIYON,
 			'sifre'        : self.sifre     if self.sifre                        else '1234',
 			'eposta'       : self.eposta    if self.eposta                       else 'webmaster@localhost',
 			'kullanici'    : self.kullanici if self.kullanici                    else 'www-data',
@@ -49,24 +52,22 @@ class Kur(object):
 
 	def olustur(self):
 		setup(
-			name = 'Virtual Host Creater 3',
-			version = VERSIYON,
-			description = 'Virtual Host Creater Project',
-			author = 'ugorur',
-			author_email = "mail@ugorur.com",
-			url = 'https://github.com/ugorur/vhost-project',
-			license = 'GPL v2',
-			packages = find_packages(),
+			name                 = 'Virtual Host Creater 3',
+			version              = VERSIYON,
+			description          = 'Virtual Host Creater Project',
+			author               = 'ugorur',
+			author_email         = "mail@ugorur.com",
+			url                  = 'https://github.com/ugorur/vhost-project',
+			license              = 'GPL v2',
+			packages             = find_packages(),
 			include_package_data = True,
-			scripts = ['vhost3_conf.py', 'vhost3.py'],
-			package_data = {
-				'vhost3_lib': ['turler/php/*', 'turler/django/*']
-			},
-			entry_points = {'console_scripts': ['vhost3 = vhost3:main']}
+			scripts              = ['vhost3_conf.py', 'vhost3.py'],
+			package_data         = {'vhost3_lib': ['turler/php/*', 'turler/django/*']},
+			entry_points         = {'console_scripts': ['vhost3 = vhost3:main']}
 		)
 
 	def __del__(self):
-		system ('rm -rf vhost2_conf.py')
+		system ('rm -rf vhost3_conf.py')
 
 def main():
 	Kur()

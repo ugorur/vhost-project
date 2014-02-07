@@ -17,7 +17,7 @@ class Hosts (Lib):
 		veriler = []
 
 		for satir in icerik.split("\n"):
-			if satir.strip() != '127.0.0.1\t' + self.domain + '\twww.' + self.domain:
+			if satir.strip() != '127.0.0.1\t' + self.domain + '\twww.' + self.domain and satir.strip() != '':
 				veriler.append(satir.strip())
 
 		self._yaz('/etc/hosts', "\n".join(veriler))
