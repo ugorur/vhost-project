@@ -9,7 +9,7 @@
 	Alias /phpmyadmin /var/www/phpmyadmin/public_html
 	Alias /static/admin /usr/local/lib/python2.7/dist-packages/django/contrib/admin/static/admin
 
-	Alias /public /var/www/%(kullanici)s/public
+	Alias /public /var/www/%(kullanici)s/public_html
 	Alias /static /var/www/%(kullanici)s/static
 	Alias /media /var/www/%(kullanici)s/media
 

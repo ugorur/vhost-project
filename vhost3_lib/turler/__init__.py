@@ -3,7 +3,7 @@
 
 from os import makedirs, system
 
-from vhost2_lib import Lib
+from vhost3_lib import Lib
 
 class Tur (Lib):
 

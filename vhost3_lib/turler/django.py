@@ -51,3 +51,4 @@ class Django (Tur):
 		system('cd /var/www/' + self.kullanici + ' && python manage.py ' + komut)
 		system('chmod -R 777 /var/www/' + self.kullanici)
 		system('chown -R ' + VARSAYILAN_KULLANICI + ':www-data /var/www/' + self.kullanici)
+		system('chmod 755 /var/www/phpmyadmin/public_html/config.inc.php')

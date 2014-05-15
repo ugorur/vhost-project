@@ -10,6 +10,7 @@ from vhost3_lib.apache import Apache
 from vhost3_lib.hosts import Hosts
 from vhost3_lib.mysql import MySQL
 from vhost3_lib.turler.php import PHP
+from vhost3_lib.turler.symfony import Symfony
 from vhost3_lib.turler.django import Django
 
 class Program (object):
@@ -95,6 +96,8 @@ class Program (object):
 		apache = Apache(self.domain)
 		apache.yenile()
 
+		system('chmod 755 /var/www/phpmyadmin/public_html/config.inc.php')
+
 		system('service nscd restart')
 		exit()
 
@@ -161,6 +164,8 @@ class Program (object):
 			self.platform = Django(self.kullanici)
 		elif self._platform == 'php':
 			self.platform = PHP(self.kullanici)
+		elif self._platform == 'symfony':
+			self.platform = Symfony(self.kullanici)
 
 def main():
 	Program()

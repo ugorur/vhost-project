@@ -4,14 +4,14 @@
 from os import system
 from setuptools import setup, find_packages
 
-VERSIYON = '3.0.7'
+VERSIYON = '3.1.4'
 
 VARSAYILAN_CONF = """#!/usr/bin/env python
 #-*-coding:utf-8-*-
 
 VERSIYON = '%(versiyon)s'
 
-PLATFORMLAR = ['django', 'php']
+PLATFORMLAR = ['django', 'php', 'symfony']
 ISLEMLER = ['ekle', 'sil', 'yonet', 'pasif', 'aktif']
 
 ROOT_SIFRE = '%(sifre)s'
@@ -62,7 +62,7 @@ class Kur(object):
 			packages             = find_packages(),
 			include_package_data = True,
 			scripts              = ['vhost3_conf.py', 'vhost3.py'],
-			package_data         = {'vhost3_lib': ['turler/php/*', 'turler/django/*']},
+			package_data         = {'vhost3_lib': ['turler/php/*', 'turler/django/*', 'turler/symfony/*']},
 			entry_points         = {'console_scripts': ['vhost3 = vhost3:main', 'vhost2 = vhost3:main', 'vhost = vhost3:main']}
 		)
 
