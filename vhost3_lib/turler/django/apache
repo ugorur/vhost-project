@@ -1,4 +1,4 @@
-<VirtualHost %(domain)s>
+<VirtualHost *:80>
 	ServerAdmin %(eposta)s
 
 	ServerName %(domain)s
