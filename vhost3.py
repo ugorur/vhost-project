@@ -10,6 +10,7 @@ from vhost3_lib.apache import Apache
 from vhost3_lib.hosts import Hosts
 from vhost3_lib.mysql import MySQL
 from vhost3_lib.turler.php import PHP
+from vhost3_lib.turler.phpmyadmin import PHPMyAdmin
 from vhost3_lib.turler.symfony import Symfony
 from vhost3_lib.turler.django import Django
 
@@ -101,6 +102,31 @@ class Program (object):
 		system('service nscd restart')
 		exit()
 
+	def _kur(self):
+		self.kullanici = 'phpmyadmin'
+
+		if path.isdir('/var/www/' + self.kullanici):
+			system('rm -Rf /var/www/phpmyadmin')
+
+		self.domain = self.kullanici + '.' + self.uzanti
+
+		hosts = Hosts(self.domain)
+		hosts.ekle()
+
+		mysql = MySQL(self.kullanici)
+		mysql.yarat(ROOT_SIFRE)
+
+		platform = PHPMyAdmin()
+		platform.kur()
+
+		apache = Apache(self.domain)
+		apache.ekle(platform.apache, self.kullanici)
+
+		system('chmod -R 777 /var/www/' + self.kullanici)
+		system('chown -R ' + VARSAYILAN_KULLANICI + ':www-data /var/www/' + self.kullanici)
+
+		self._yenile()
+
 	def _pasif(self):
 		self._uzanti()
 
@@ -118,6 +144,8 @@ class Program (object):
 			if len(argv) == 2:
 				if argv[1] == 'yenile':
 					self._yenile()
+				if argv[1] == 'kur':
+					self._kur()
 				elif argv[1] == '--versiyon' or argv[1] == '-v':
 					print VERSIYON
 					exit()

@@ -4,7 +4,7 @@
 from os import system
 from setuptools import setup, find_packages
 
-VERSIYON = '3.1.4'
+VERSIYON = '3.2.0'
 
 VARSAYILAN_CONF = """#!/usr/bin/env python
 #-*-coding:utf-8-*-
@@ -24,23 +24,20 @@ VARSAYILAN_HATA_AYIKLAMA = %(hata_ayiklama)s"""
 class Kur(object):
 
 	def __init__(self):
-		self.sorular()
-		self.ayar_olustur()
-
-		dosya = open('vhost3_conf.py', 'w')
-		dosya.write(VARSAYILAN_CONF % self.ayarlar)
-		dosya.close()
-
+		self._sorular()
+		self._ayar_olustur()
+		self._dosya_olustur()
+		
 		self.olustur()
 
-	def sorular(self):
+	def _sorular(self):
 		self.sifre         = raw_input('MySQL Roots Şifresi Giriniz: ')
 		self.eposta        = raw_input('E-Posta Adresinizi Giriniz: ')
 		self.kullanici     = raw_input('Linux Kullanıcı Adınızı Giriniz: ')
 		self.uzanti        = raw_input('Varsayılan Alan Adı Uzantınızı Giriniz: ')
 		self.hata_ayiklama = raw_input('Hata Ayıklama Açılsın mı? (E/H): ')
 
-	def ayar_olustur(self):
+	def _ayar_olustur(self):
 		self.ayarlar = {
 			'versiyon'     : VERSIYON,
 			'sifre'        : self.sifre     if self.sifre                        else '1234',
@@ -49,6 +46,11 @@ class Kur(object):
 			'uzanti'       : self.uzanti    if self.uzanti                       else 'loc',
 			'hata_ayiklama': 'True'         if self.hata_ayiklama.upper() != 'H' else 'False',
 		}
+
+	def _dosya_olustur(self):
+		dosya = open('vhost3_conf.py', 'w')
+		dosya.write(VARSAYILAN_CONF % self.ayarlar)
+		dosya.close()
 
 	def olustur(self):
 		setup(
@@ -62,12 +64,13 @@ class Kur(object):
 			packages             = find_packages(),
 			include_package_data = True,
 			scripts              = ['vhost3_conf.py', 'vhost3.py'],
-			package_data         = {'vhost3_lib': ['turler/php/*', 'turler/django/*', 'turler/symfony/*']},
+			package_data         = {'vhost3_lib': ['turler/php/*', 'turler/django/*', 'turler/symfony/*', 'turler/phpmyadmin/*']},
 			entry_points         = {'console_scripts': ['vhost3 = vhost3:main', 'vhost2 = vhost3:main', 'vhost = vhost3:main']}
 		)
 
 	def __del__(self):
 		system ('rm -rf vhost3_conf.py')
+		system ('vhost kur')
 
 def main():
 	Kur()

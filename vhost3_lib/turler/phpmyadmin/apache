@@ -1,0 +1,18 @@
+<VirtualHost *:80>
+	ServerAdmin %(eposta)s
+
+	ServerName phpmyadmin.loc
+	ServerAlias www.phpmyadmin.loc
+
+	DocumentRoot /var/www/phpmyadmin/public_html
+
+	ErrorLog /var/www/phpmyadmin/logs/error.log
+	CustomLog /var/www/phpmyadmin/logs/access.log common
+
+	<Directory /var/www/phpmyadmin/public_html>
+		DirectoryIndex index.php
+		Options Indexes FollowSymLinks
+		AllowOverride All
+		Require all granted
+	</Directory>
+</VirtualHost>
