@@ -32,7 +32,7 @@ class PHPMyAdmin (Tur):
 		})
 
 	def _indir_ac(self):
-		f = urllib2.urlopen('http://downloads.sourceforge.net/project/phpmyadmin/phpMyAdmin/4.2.11/phpMyAdmin-4.2.11-all-languages.zip?r=http%3A%2F%2Fwww.phpmyadmin.net%2Fhome_page%2Findex.php&ts=1416485255&use_mirror=kent')
+		f = urllib2.urlopen('https://files.phpmyadmin.net/phpMyAdmin/4.6.3/phpMyAdmin-4.6.3-all-languages.zip')
 
 		with open('/tmp/phpmyadmin.zip', "wb") as local_file:
 			local_file.write(f.read())
@@ -40,7 +40,7 @@ class PHPMyAdmin (Tur):
 		zfile = zipfile.ZipFile("/tmp/phpmyadmin.zip")
 		zfile.extractall('/var/www/phpmyadmin/')
 
-		rename('/var/www/phpmyadmin/phpMyAdmin-4.2.11-all-languages', '/var/www/phpmyadmin/public_html')
+		rename('/var/www/phpmyadmin/phpMyAdmin-4.6.3-all-languages', '/var/www/phpmyadmin/public_html')
 
 	def _dizinleri_duzenle(self):
 		rmtree('/var/www/phpmyadmin/public_html/doc')
@@ -67,7 +67,7 @@ class PHPMyAdmin (Tur):
 		sql_file = []
 		next_line = 0
 
-		for line in open("/var/www/phpmyadmin/public_html/examples/create_tables.sql"):
+		for line in open("/var/www/phpmyadmin/public_html/sql/create_tables.sql"):
 			if next_line:
 				sql_file.append('-- ' + line)
 				next_line -= 1
