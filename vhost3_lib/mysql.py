@@ -16,7 +16,8 @@ class MySQL (Lib):
 
 	def yarat(self, sifre = ROOT_SIFRE):
 		self.imlec.execute('CREATE DATABASE IF NOT EXISTS ' + self.kullanici + '_db CHARACTER SET utf8 COLLATE utf8_general_ci')
-		self.imlec.execute('GRANT ALL ON ' + self.kullanici + '_db.* TO ' + self.kullanici + '@localhost IDENTIFIED BY \'' + sifre + '\'')
+		self.imlec.execute('CREATE USER IF NOT EXISTS ' + self.kullanici + '@localhost IDENTIFIED BY \'' + sifre + '\'')
+		self.imlec.execute('GRANT ALL ON ' + self.kullanici + '_db.* TO ' + self.kullanici + '@localhost')
 
 	def yoket(self):
 		self.yarat()
