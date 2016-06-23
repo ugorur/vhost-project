@@ -21,9 +21,13 @@ VARSAYILAN_KULLANICI = '%(kullanici)s'
 VARSAYILAN_UZANTI = '%(uzanti)s'
 VARSAYILAN_HATA_AYIKLAMA = %(hata_ayiklama)s"""
 
+XDEBUG_CONF = """zend_extension="/usr/lib/xdebug.so"
+xdebug.remote_enable=1"""
+
 class Kur(object):
 
 	def __init__(self):
+		self._xdebug()
 		self._sorular()
 		self._ayar_olustur()
 		self._dosya_olustur()
@@ -50,6 +54,16 @@ class Kur(object):
 	def _dosya_olustur(self):
 		dosya = open('vhost3_conf.py', 'w')
 		dosya.write(VARSAYILAN_CONF % self.ayarlar)
+		dosya.close()
+
+	def _xdebug(self):
+		system('cd xdebug && phpize && ./configure --enable-xdebug && make && make install && cp modules/xdebug.so /usr/lib/.')
+		dosya = open('/etc/php/7.0/apache2/conf.d/20-xdebug.ini', 'w')
+		dosya.write(XDEBUG_CONF)
+		dosya.close()
+
+		dosya = open('/etc/php/7.0/cli/conf.d/20-xdebug.ini', 'w')
+		dosya.write(XDEBUG_CONF)
 		dosya.close()
 
 	def olustur(self):

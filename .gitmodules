@@ -1,0 +1,3 @@
+[submodule "xdebug"]
+	path = xdebug
+	url = git://github.com/xdebug/xdebug.git
