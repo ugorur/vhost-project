@@ -3,8 +3,9 @@
 
 from os import system
 from setuptools import setup, find_packages
+import subprocess
 
-VERSIYON = '3.2.1'
+VERSIYON = '3.3.0'
 
 VARSAYILAN_CONF = """#!/usr/bin/env python
 #-*-coding:utf-8-*-
@@ -27,8 +28,10 @@ xdebug.remote_enable=1"""
 class Kur(object):
 
 	def __init__(self):
-		self._xdebug()
 		self._sorular()
+		self._system()
+		self._composer()
+		self._xdebug()
 		self._ayar_olustur()
 		self._dosya_olustur()
 		
@@ -65,6 +68,16 @@ class Kur(object):
 		dosya = open('/etc/php/7.0/cli/conf.d/20-xdebug.ini', 'w')
 		dosya.write(XDEBUG_CONF)
 		dosya.close()
+		dosya.close()
+
+	def _composer(self):
+		system('php -r "copy(\'https://getcomposer.org/installer\', \'composer-setup.php\');"')
+		system('php composer-setup.php --install-dir=/usr/bin --filename=composer')
+		system('php -r "unlink(\'composer-setup.php\');"')
+		
+	def _system(self):
+		p = subprocess.Popen(['apt-get install mysql-server mysql-client apache2 php7.0 libapache2-mod-php7.0 php7.0-mbstring php7.0-mysql php7.0-curl php7.0-gd php-pear php7.0-imap php7.0-mcrypt php7.0-pspell php7.0-pspell php7.0-recode php7.0-snmp php7.0-sqlite3 php7.0-bz2 php7.0-dev php7.0-zip php7.0-tidy php7.0-xmlrpc php7.0-xsl php7.0-json python-mysqldb python-pip git nscd python-imaging python-pythonmagick python-markdown python-textile python-docutils python-django snmp'],  stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+		stdout, stderr = p.communicate(input=self.sifre + '\n')
 
 	def olustur(self):
 		setup(
