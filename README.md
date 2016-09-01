@@ -4,18 +4,11 @@ Ubuntu için Apache Virtual Host Yönetim Projesi
 Kurulum
 _______
 
-Öncelikle aşağıdaki komut ile gerekli paketleri kuruyoruz. Kurulum sırasında sizden MySQL Server için root şifresi isteyecektir.
-
-```bash
-sudo apt-get install mysql-server mysql-client apache2 php7.0 libapache2-mod-php7.0 php7.0-mbstring php7.0-mysql php7.0-curl php7.0-gd php-pear php7.0-imap php7.0-mcrypt php7.0-pspell php7.0-pspell php7.0-recode php7.0-snmp php7.0-sqlite3 php7.0-bz2 php7.0-dev php7.0-zip php7.0-tidy php7.0-xmlrpc php7.0-xsl php7.0-json python-mysqldb python-pip git nscd python-imaging python-pythonmagick python-markdown python-textile python-docutils python-django snmp
-```
-
-Ardından programı kendi makinamıza klonluyoruz.
+Programı kendi makinamıza klonluyoruz.
 
 ```bash
 git clone https://github.com/ugorur/vhost-project.git
 ```
-
 Klonladığımız dizine girerek kurulumu tamamlıyoruz.
 
 Kurulum sırasında bizden istediği bilgiler ve anlamları:
