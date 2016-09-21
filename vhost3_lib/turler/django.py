@@ -21,7 +21,7 @@ class Django (Tur):
 		self.dizinler()
 		self.index()
 
-		system('django-admin.py startproject ' + self.kullanici + ' /var/www/' + self.kullanici)
+		system('django-admin startproject ' + self.kullanici + ' /var/www/' + self.kullanici)
 
 		self._yaz('/var/www/' + self.kullanici + '/' + self.kullanici + '/wsgi.py', self._wsgi % {'kullanici': self.kullanici})
 
