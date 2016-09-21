@@ -5,7 +5,7 @@ from os import system
 from setuptools import setup, find_packages
 import subprocess
 
-VERSIYON = '3.3.0'
+VERSIYON = '3.4.0'
 
 VARSAYILAN_CONF = """#!/usr/bin/env python
 #-*-coding:utf-8-*-
