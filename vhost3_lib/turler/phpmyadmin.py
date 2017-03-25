@@ -32,7 +32,7 @@ class PHPMyAdmin (Tur):
 		})
 
 	def _indir_ac(self):
-		f = urllib2.urlopen('https://files.phpmyadmin.net/phpMyAdmin/4.6.4/phpMyAdmin-4.6.4-all-languages.zip')
+		f = urllib2.urlopen('https://files.phpmyadmin.net/phpMyAdmin/4.6.6/phpMyAdmin-4.6.6-all-languages.zip')
 
 		with open('/tmp/phpmyadmin.zip', "wb") as local_file:
 			local_file.write(f.read())
