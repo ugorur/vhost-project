@@ -5,7 +5,7 @@ from os import system
 from setuptools import setup, find_packages
 import subprocess
 
-VERSIYON = '3.4.0'
+VERSIYON = '3.4.1'
 
 VARSAYILAN_CONF = """#!/usr/bin/env python
 #-*-coding:utf-8-*-
@@ -76,7 +76,7 @@ class Kur(object):
 		system('php -r "unlink(\'composer-setup.php\');"')
 		
 	def _system(self):
-		p = subprocess.Popen(['apt-get install mysql-server mysql-client apache2 php7.0 libapache2-mod-php7.0 php7.0-mbstring php7.0-mysql php7.0-curl php7.0-gd php-pear php7.0-imap php7.0-mcrypt php7.0-pspell php7.0-pspell php7.0-recode php7.0-snmp php7.0-sqlite3 php7.0-bz2 php7.0-dev php7.0-zip php7.0-tidy php7.0-xmlrpc php7.0-xsl php7.0-json python-mysqldb python-pip git nscd python-imaging python-pythonmagick python-markdown python-textile python-docutils python-django snmp'],  stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+		p = subprocess.Popen(['apt update && apt -y upgrade && apt-get install -y apache2 php7.1 libapache2-mod-php7.1 php7.1-mbstring php7.1-mysql php7.1-curl php7.1-gd php-pear php7.1-imap php7.1-mcrypt php7.1-pspell php7.1-pspell php7.1-recode php7.1-snmp php7.1-sqlite3 php7.1-bz2 php7.1-dev php7.1-zip php7.1-tidy php7.1-xmlrpc php7.1-xsl php7.1-json'],  stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 		stdout, stderr = p.communicate(input=self.sifre + '\n')
 
 	def olustur(self):
