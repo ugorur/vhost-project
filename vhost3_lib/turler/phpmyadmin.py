@@ -9,6 +9,8 @@ from shutil import move, rmtree
 from random import SystemRandom
 import urllib2, zipfile, subprocess
 
+PHPMYADMIN_VERSION = "4.7.3"
+
 class PHPMyAdmin (Tur):
 
 	def __init__(self):
@@ -32,7 +34,7 @@ class PHPMyAdmin (Tur):
 		})
 
 	def _indir_ac(self):
-		f = urllib2.urlopen('https://files.phpmyadmin.net/phpMyAdmin/4.6.6/phpMyAdmin-4.6.6-all-languages.zip')
+		f = urllib2.urlopen('https://files.phpmyadmin.net/phpMyAdmin/' + PHPMYADMIN_VERSION + '/phpMyAdmin-' + PHPMYADMIN_VERSION + '-all-languages.zip')
 
 		with open('/tmp/phpmyadmin.zip', "wb") as local_file:
 			local_file.write(f.read())
@@ -40,7 +42,7 @@ class PHPMyAdmin (Tur):
 		zfile = zipfile.ZipFile("/tmp/phpmyadmin.zip")
 		zfile.extractall('/var/www/phpmyadmin/')
 
-		rename('/var/www/phpmyadmin/phpMyAdmin-4.6.3-all-languages', '/var/www/phpmyadmin/public_html')
+		rename('/var/www/phpmyadmin/phpMyAdmin-' + PHPMYADMIN_VERSION + '-all-languages', '/var/www/phpmyadmin/public_html')
 
 	def _dizinleri_duzenle(self):
 		rmtree('/var/www/phpmyadmin/public_html/doc')
